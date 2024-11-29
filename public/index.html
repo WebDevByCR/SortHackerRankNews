@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hacker News Rank Verifier</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Hacker News Rank Verifier</h1>
+    <button onclick="runScript()">Run Script</button>
+    <div id="results"></div>
+    <a href="#" id="viewResultsLink" style="display: none;" onclick="displaySavedResults()">View Saved Results</a>
+  </div>
+  <script>
+    async function runScript() {
+      document.getElementById('results').innerHTML = 'Running...';
+      const response = await fetch('/run-script');
+      const data = await response.json();
+      document.getElementById('results').innerHTML = data.results;
+      localStorage.setItem('limitedArticles', JSON.stringify(data.limitedArticles));
+      document.getElementById('viewResultsLink').style.display = 'block';
+    }
+
+    function displaySavedResults() {
+      const savedArticles = JSON.parse(localStorage.getItem('limitedArticles'));
+      if (savedArticles) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
+        savedArticles.forEach(article => {
+          resultsDiv.innerHTML += `<p>Rank: ${article.rank}, Title: ${article.title}, Timestamp: ${article.timestamp}</p>`;
+        });
+      }
+    }
+  </script>
+</body>
+</html>
